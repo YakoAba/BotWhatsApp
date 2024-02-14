@@ -16,7 +16,19 @@ quando alguem for começar uma conversa seja bem claro sobre que é voce e qual 
 
 venom.create({
     session: "chatGPT_BOT",
-    multidevice: true
+    multidevice: true,
+    mkdirFolderToken: '', //folder directory tokens, just inside the venom folder, example:  { mkdirFolderToken: '/node_modules', } //will save the tokens folder in the node_modules directory
+    headless: false, // Headless chrome
+    //devtools: false, // Open devtools by default
+   // useChrome: true, // If false will use Chromium instance
+   // debug: false, // Opens a debug session
+    logQR: true, // Logs QR automatically in terminal
+    browserArgs: ['--no-sandbox', '--disable-setuid-sandbox', '--headless', '--disable-gpu'], // Parameters to be added into the chrome browser instance
+    disableSpins: true, // Will disable Spinnies animation, useful for containers (docker) for a better log
+    disableWelcome: true, // Will disable the welcoming message which appears in the beginning
+    updates: true, // Logs info updates automatically in terminal
+    autoClose: 60000, // Automatically closes the venom-bot only when scanning the QR code (default 60 seconds, if you want to turn it off, assign 0 or false)
+
 })
     .then((client) => start(client))
     .catch((err) => console.log(err));
