@@ -53,24 +53,32 @@ const start = (client) => {
         historico.historico.push("user: " + message.body);
         console.log(historico.historico);
 
-        console.log(banco.db);
-        axios.post("https://api.openai.com/v1/chat/completions", {
+
+        const modelo = {
             "model": "gpt-3.5-turbo",
             "messages": [
-                { "role": "system", "content": treinamento},
-                { "role": "system", "content": "historico de conversas: " + historico.historico },
+                { "role": "system", "content": JSON.stringify(treinamento) }, // Assuming `treinamento` contains conversation training data
+                { "role": "system", "content": "historico de conversas: " + historico.historico.join(', ') },
                 { "role": "user", "content": message.body }
             ]
-        }, {
-            headers: header
-        })
+        };
+
+        console.log(modelo);
+        fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: header,
+            body: JSON.stringify(modelo),
+          })
+            .then((response) => response.json())
             .then((response) => {
-                console.log(response.data.choices[0].message.content);
-                historico.historico.push("assistent: " + response.data.choices[0].message.content);
-                client.sendText(message.from, response.data.choices[0].message.content);
+                console.log(response)
+              //const assistantResponse = response.choices[0].message.content;
+              //historico.historico.push("assistent: " + assistantResponse);
+            //  client.sendText(message.from, assistantResponse);
             })
             .catch((err) => {
-                console.log(err);
-            })
+              console.error("Error:", err);
+              // Handle API errors gracefully, e.g., provide informative fallback messages
+            });
     })
 }
